@@ -66,6 +66,13 @@ import {
 } from '@/tools/calendly'
 import { clayPopulateTool } from '@/tools/clay'
 import {
+  clickbankCreateOrderTool,
+  clickbankGetOrderTool,
+  clickbankGetProductsTool,
+  clickbankRefundOrderTool,
+  clickbankTrackSaleTool,
+} from '@/tools/clickbank'
+import {
   confluenceCreateCommentTool,
   confluenceCreatePageTool,
   confluenceDeleteAttachmentTool,
@@ -2420,6 +2427,12 @@ export const tools: Record<string, ToolConfig> = {
   stripe_search_prices: stripeSearchPricesTool,
   stripe_retrieve_event: stripeRetrieveEventTool,
   stripe_list_events: stripeListEventsTool,
+  // ClickBank
+  clickbank_create_order: clickbankCreateOrderTool,
+  clickbank_get_order: clickbankGetOrderTool,
+  clickbank_refund_order: clickbankRefundOrderTool,
+  clickbank_get_products: clickbankGetProductsTool,
+  clickbank_track_sale: clickbankTrackSaleTool,
   salesforce_get_accounts: salesforceGetAccountsTool,
   salesforce_create_account: salesforceCreateAccountTool,
   salesforce_update_account: salesforceUpdateAccountTool,

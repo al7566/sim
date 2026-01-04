@@ -13,6 +13,7 @@ import { CalendlyBlock } from '@/blocks/blocks/calendly'
 import { ChatTriggerBlock } from '@/blocks/blocks/chat_trigger'
 import { CirclebackBlock } from '@/blocks/blocks/circleback'
 import { ClayBlock } from '@/blocks/blocks/clay'
+import { ClickBankBlock } from '@/blocks/blocks/clickbank'
 import { ConditionBlock } from '@/blocks/blocks/condition'
 import { ConfluenceBlock } from '@/blocks/blocks/confluence'
 import { CursorBlock } from '@/blocks/blocks/cursor'
@@ -261,6 +262,7 @@ export const registry: Record<string, BlockConfig> = {
   start_trigger: StartTriggerBlock,
   stt: SttBlock,
   tts: TtsBlock,
+  clickbank: ClickBankBlock,
   stripe: StripeBlock,
   supabase: SupabaseBlock,
   tavily: TavilyBlock,

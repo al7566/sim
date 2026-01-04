@@ -55,6 +55,17 @@ export const env = createEnv({
     ENTERPRISE_STORAGE_LIMIT_GB:           z.number().optional().default(500),     // Default storage limit in GB for enterprise tier (can be overridden per org)
     BILLING_ENABLED:                       z.boolean().optional(),                 // Enable billing enforcement and usage tracking
     OVERAGE_THRESHOLD_DOLLARS:             z.number().optional().default(50),      // Dollar threshold for incremental overage billing (default: $50)
+    
+    // ClickBank Integration
+    CLICKBANK_VENDOR_ID:                   z.string().optional(),                  // ClickBank vendor account ID
+    CLICKBANK_SECRET_KEY:                  z.string().optional(),                  // ClickBank secret key for IPN verification
+    CLICKBANK_API_KEY:                     z.string().optional(),                  // ClickBank API key for API calls
+    CLICKBANK_CLERK_KEY:                   z.string().optional(),                  // ClickBank clerk API key
+    
+    // PayPal Integration
+    PAYPAL_CLIENT_ID:                      z.string().optional(),                  // PayPal REST API client ID
+    PAYPAL_SECRET:                         z.string().optional(),                  // PayPal REST API secret
+    PAYPAL_MODE:                           z.enum(['sandbox', 'live']).optional().default('live'), // PayPal environment mode
 
     // Email & Communication
     EMAIL_VERIFICATION_ENABLED:            z.boolean().optional(),                 // Enable email verification for user registration and login (defaults to false)
