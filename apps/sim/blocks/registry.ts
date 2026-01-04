@@ -81,6 +81,7 @@ import { OneDriveBlock } from '@/blocks/blocks/onedrive'
 import { OpenAIBlock } from '@/blocks/blocks/openai'
 import { OutlookBlock } from '@/blocks/blocks/outlook'
 import { ParallelBlock } from '@/blocks/blocks/parallel'
+import { PayPalBlock } from '@/blocks/blocks/paypal'
 import { PerplexityBlock } from '@/blocks/blocks/perplexity'
 import { PineconeBlock } from '@/blocks/blocks/pinecone'
 import { PipedriveBlock } from '@/blocks/blocks/pipedrive'
@@ -263,6 +264,7 @@ export const registry: Record<string, BlockConfig> = {
   stt: SttBlock,
   tts: TtsBlock,
   clickbank: ClickBankBlock,
+  paypal: PayPalBlock,
   stripe: StripeBlock,
   supabase: SupabaseBlock,
   tavily: TavilyBlock,

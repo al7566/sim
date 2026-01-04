@@ -73,6 +73,16 @@ import {
   clickbankTrackSaleTool,
 } from '@/tools/clickbank'
 import {
+  paypalCancelSubscriptionTool,
+  paypalCaptureOrderTool,
+  paypalCreateOrderTool,
+  paypalCreateProductTool,
+  paypalCreateSubscriptionTool,
+  paypalGetOrderTool,
+  paypalGetSubscriptionTool,
+  paypalRefundPaymentTool,
+} from '@/tools/paypal'
+import {
   confluenceCreateCommentTool,
   confluenceCreatePageTool,
   confluenceDeleteAttachmentTool,
@@ -2433,6 +2443,15 @@ export const tools: Record<string, ToolConfig> = {
   clickbank_refund_order: clickbankRefundOrderTool,
   clickbank_get_products: clickbankGetProductsTool,
   clickbank_track_sale: clickbankTrackSaleTool,
+  // PayPal
+  paypal_create_order: paypalCreateOrderTool,
+  paypal_capture_order: paypalCaptureOrderTool,
+  paypal_get_order: paypalGetOrderTool,
+  paypal_refund_payment: paypalRefundPaymentTool,
+  paypal_create_subscription: paypalCreateSubscriptionTool,
+  paypal_cancel_subscription: paypalCancelSubscriptionTool,
+  paypal_get_subscription: paypalGetSubscriptionTool,
+  paypal_create_product: paypalCreateProductTool,
   salesforce_get_accounts: salesforceGetAccountsTool,
   salesforce_create_account: salesforceCreateAccountTool,
   salesforce_update_account: salesforceUpdateAccountTool,
