@@ -237,6 +237,63 @@ Key environment variables for self-hosted deployments (see `apps/sim/.env.exampl
 | `VLLM_BASE_URL` | No | vLLM server URL for self-hosted models |
 | `COPILOT_API_KEY` | No | API key from sim.ai for Copilot features |
 
+## Payment Providers
+
+Sim supports multiple payment processors for monetizing workflows and deployed applications:
+
+### Supported Providers
+
+| Provider | Tools | Description |
+|----------|-------|-------------|
+| **Stripe** | Full suite | Industry-standard payment processing |
+| **ClickBank** | 5 tools | Digital product sales and affiliate marketing |
+| **PayPal** | 8 tools | Orders, subscriptions, and PayPal Smart Buttons |
+
+### Configuration
+
+Add credentials to environment variables (all optional):
+
+```bash
+# ClickBank
+CLICKBANK_VENDOR_ID=your_vendor_id
+CLICKBANK_SECRET_KEY=your_secret_key      # For IPN verification
+CLICKBANK_API_KEY=your_api_key
+CLICKBANK_CLERK_KEY=your_clerk_key
+
+# PayPal
+PAYPAL_CLIENT_ID=your_client_id
+PAYPAL_SECRET=your_secret
+PAYPAL_MODE=live                          # 'sandbox' or 'live'
+
+# Stripe
+STRIPE_SECRET_KEY=your_stripe_key
+STRIPE_WEBHOOK_SECRET=your_webhook_secret
+```
+
+### Webhook URLs
+
+Configure these endpoints in your payment provider dashboards:
+
+- **ClickBank IPN**: `https://yourdomain.com/api/webhooks/clickbank`
+- **PayPal Webhooks**: `https://yourdomain.com/api/webhooks/paypal`
+- **Stripe Webhooks**: `https://yourdomain.com/api/webhooks/stripe`
+
+All webhooks include signature verification for security.
+
+### Available Operations
+
+**ClickBank**: Create orders, retrieve order details, process refunds, list products, track affiliate sales
+
+**PayPal**: Create/capture orders, process refunds, manage subscriptions (create/cancel/get), create products
+
+**Stripe**: Complete payment processing suite (see Stripe block for full list)
+
+### Learn More
+
+- [ClickBank Integration Guide](deploy/railway/README.md)
+- [PayPal Integration Guide](deploy/digitalocean/README.md)
+- [Full Documentation](https://docs.sim.ai/payments)
+
 ## Troubleshooting
 
 ### Ollama models not showing in dropdown (Docker)
