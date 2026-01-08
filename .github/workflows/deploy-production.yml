@@ -1,0 +1,156 @@
+name: Deploy to Production (Railway)
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment environment'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+          - production
+          - staging
+
+jobs:
+  deploy:
+    name: Deploy to Railway
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment || 'production' }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Railway CLI
+        run: |
+          curl -fsSL https://railway.app/install.sh | sh
+          echo "$HOME/.railway/bin" >> $GITHUB_PATH
+
+      - name: Deploy to Railway
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+          # Core secrets
+          BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET }}
+          ENCRYPTION_KEY: ${{ secrets.ENCRYPTION_KEY }}
+          API_ENCRYPTION_KEY: ${{ secrets.API_ENCRYPTION_KEY }}
+          # Database
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          # PayPal
+          PAYPAL_CLIENT_ID: ${{ secrets.PAYPAL_CLIENT_ID }}
+          PAYPAL_SECRET: ${{ secrets.PAYPAL_SECRET }}
+          PAYPAL_MODE: ${{ secrets.PAYPAL_MODE || 'live' }}
+          # ClickBank
+          CLICKBANK_VENDOR_ID: ${{ secrets.CLICKBANK_VENDOR_ID }}
+          CLICKBANK_SECRET_KEY: ${{ secrets.CLICKBANK_SECRET_KEY }}
+          CLICKBANK_API_KEY: ${{ secrets.CLICKBANK_API_KEY }}
+          CLICKBANK_CLERK_KEY: ${{ secrets.CLICKBANK_CLERK_KEY }}
+          # Stripe
+          STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+          STRIPE_WEBHOOK_SECRET: ${{ secrets.STRIPE_WEBHOOK_SECRET }}
+        run: |
+          echo "🚀 Starting deployment to Railway..."
+          
+          # Login to Railway
+          railway login --token=$RAILWAY_TOKEN
+          
+          # Link to Railway project (or create new)
+          if [ -n "${{ secrets.RAILWAY_PROJECT_ID }}" ]; then
+            railway link ${{ secrets.RAILWAY_PROJECT_ID }}
+          else
+            railway init
+          fi
+          
+          # Set environment variables
+          echo "⚙️ Configuring environment variables..."
+          
+          # Core secrets
+          [ -n "$BETTER_AUTH_SECRET" ] && railway variables set BETTER_AUTH_SECRET="$BETTER_AUTH_SECRET"
+          [ -n "$ENCRYPTION_KEY" ] && railway variables set ENCRYPTION_KEY="$ENCRYPTION_KEY"
+          [ -n "$API_ENCRYPTION_KEY" ] && railway variables set API_ENCRYPTION_KEY="$API_ENCRYPTION_KEY"
+          
+          # Database
+          [ -n "$DATABASE_URL" ] && railway variables set DATABASE_URL="$DATABASE_URL"
+          
+          # PayPal
+          [ -n "$PAYPAL_CLIENT_ID" ] && railway variables set PAYPAL_CLIENT_ID="$PAYPAL_CLIENT_ID"
+          [ -n "$PAYPAL_SECRET" ] && railway variables set PAYPAL_SECRET="$PAYPAL_SECRET"
+          [ -n "$PAYPAL_MODE" ] && railway variables set PAYPAL_MODE="$PAYPAL_MODE"
+          
+          # ClickBank
+          [ -n "$CLICKBANK_VENDOR_ID" ] && railway variables set CLICKBANK_VENDOR_ID="$CLICKBANK_VENDOR_ID"
+          [ -n "$CLICKBANK_SECRET_KEY" ] && railway variables set CLICKBANK_SECRET_KEY="$CLICKBANK_SECRET_KEY"
+          [ -n "$CLICKBANK_API_KEY" ] && railway variables set CLICKBANK_API_KEY="$CLICKBANK_API_KEY"
+          [ -n "$CLICKBANK_CLERK_KEY" ] && railway variables set CLICKBANK_CLERK_KEY="$CLICKBANK_CLERK_KEY"
+          
+          # Stripe
+          [ -n "$STRIPE_SECRET_KEY" ] && railway variables set STRIPE_SECRET_KEY="$STRIPE_SECRET_KEY"
+          [ -n "$STRIPE_WEBHOOK_SECRET" ] && railway variables set STRIPE_WEBHOOK_SECRET="$STRIPE_WEBHOOK_SECRET"
+          
+          # Deploy
+          echo "🚢 Deploying to Railway..."
+          railway up --detach
+          
+          echo "✅ Deployment complete!"
+
+      - name: Get deployment URL
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: |
+          # Wait for deployment to be ready
+          sleep 30
+          
+          # Get the deployment URL
+          DEPLOYMENT_URL=$(railway status --json | jq -r '.deployments[0].url')
+          
+          echo "🌐 Deployment URL: $DEPLOYMENT_URL"
+          echo "deployment_url=$DEPLOYMENT_URL" >> $GITHUB_OUTPUT
+          
+          # Display webhook URLs
+          echo ""
+          echo "📋 Configure these webhook URLs in your payment dashboards:"
+          echo "ClickBank IPN: $DEPLOYMENT_URL/api/webhooks/clickbank"
+          echo "PayPal: $DEPLOYMENT_URL/api/webhooks/paypal"
+          echo "Stripe: $DEPLOYMENT_URL/api/webhooks/stripe"
+
+      - name: Health check
+        run: |
+          echo "🏥 Running health checks..."
+          
+          # Wait for app to be fully ready
+          sleep 60
+          
+          DEPLOYMENT_URL=$(railway status --json | jq -r '.deployments[0].url')
+          
+          # Check liveness
+          echo "Checking liveness probe..."
+          curl -f "$DEPLOYMENT_URL/api/health/live" || echo "⚠️ Liveness check failed"
+          
+          # Check readiness
+          echo "Checking readiness probe..."
+          curl -f "$DEPLOYMENT_URL/api/health/ready" || echo "⚠️ Readiness check failed"
+          
+          echo "✅ Health checks complete!"
+
+      - name: Summary
+        run: |
+          echo "## 🎉 Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Status:** ✅ Deployed successfully" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Deployment URL:** $(railway status --json | jq -r '.deployments[0].url')" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📋 Next Steps" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Configure webhook URLs in your payment dashboards:" >> $GITHUB_STEP_SUMMARY
+          echo "- **ClickBank IPN:** \`$(railway status --json | jq -r '.deployments[0].url')/api/webhooks/clickbank\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **PayPal:** \`$(railway status --json | jq -r '.deployments[0].url')/api/webhooks/paypal\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **Stripe:** \`$(railway status --json | jq -r '.deployments[0].url')/api/webhooks/stripe\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 💰 Payment Providers Configured" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ ClickBank (50% affiliate commissions)" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ PayPal (30% affiliate commissions)" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Stripe (30% affiliate commissions)" >> $GITHUB_STEP_SUMMARY

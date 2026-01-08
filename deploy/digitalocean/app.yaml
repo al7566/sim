@@ -1,0 +1,68 @@
+name: sim
+services:
+  - name: app
+    github:
+      repo: simstudioai/sim
+      branch: main
+      deploy_on_push: true
+    dockerfile_path: docker/app.Dockerfile
+    health_check:
+      http_path: /api/health/ready
+      initial_delay_seconds: 30
+      period_seconds: 10
+      timeout_seconds: 5
+      success_threshold: 1
+      failure_threshold: 3
+    http_port: 3000
+    instance_count: 1
+    instance_size_slug: professional-xs
+    envs:
+      - key: BETTER_AUTH_SECRET
+        scope: RUN_TIME
+        type: SECRET
+      - key: BETTER_AUTH_URL
+        scope: RUN_TIME
+        value: ${APP_URL}
+      - key: ENCRYPTION_KEY
+        scope: RUN_TIME
+        type: SECRET
+      - key: INTERNAL_API_SECRET
+        scope: RUN_TIME
+        type: SECRET
+      - key: API_ENCRYPTION_KEY
+        scope: RUN_TIME
+        type: SECRET
+      - key: NEXT_PUBLIC_APP_URL
+        scope: RUN_AND_BUILD_TIME
+        value: ${APP_URL}
+      - key: DATABASE_URL
+        scope: RUN_TIME
+        value: ${db.DATABASE_URL}
+      - key: CLICKBANK_VENDOR_ID
+        scope: RUN_TIME
+        type: SECRET
+      - key: CLICKBANK_SECRET_KEY
+        scope: RUN_TIME
+        type: SECRET
+      - key: CLICKBANK_API_KEY
+        scope: RUN_TIME
+        type: SECRET
+      - key: PAYPAL_CLIENT_ID
+        scope: RUN_TIME
+        type: SECRET
+      - key: PAYPAL_SECRET
+        scope: RUN_TIME
+        type: SECRET
+      - key: PAYPAL_MODE
+        scope: RUN_TIME
+        value: live
+      - key: STRIPE_SECRET_KEY
+        scope: RUN_TIME
+        type: SECRET
+
+databases:
+  - name: db
+    engine: PG
+    version: "16"
+    production: true
+    cluster_name: sim-db

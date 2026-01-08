@@ -13,6 +13,7 @@ import { CalendlyBlock } from '@/blocks/blocks/calendly'
 import { ChatTriggerBlock } from '@/blocks/blocks/chat_trigger'
 import { CirclebackBlock } from '@/blocks/blocks/circleback'
 import { ClayBlock } from '@/blocks/blocks/clay'
+import { ClickBankBlock } from '@/blocks/blocks/clickbank'
 import { ConditionBlock } from '@/blocks/blocks/condition'
 import { ConfluenceBlock } from '@/blocks/blocks/confluence'
 import { CursorBlock } from '@/blocks/blocks/cursor'
@@ -80,6 +81,7 @@ import { OneDriveBlock } from '@/blocks/blocks/onedrive'
 import { OpenAIBlock } from '@/blocks/blocks/openai'
 import { OutlookBlock } from '@/blocks/blocks/outlook'
 import { ParallelBlock } from '@/blocks/blocks/parallel'
+import { PayPalBlock } from '@/blocks/blocks/paypal'
 import { PerplexityBlock } from '@/blocks/blocks/perplexity'
 import { PineconeBlock } from '@/blocks/blocks/pinecone'
 import { PipedriveBlock } from '@/blocks/blocks/pipedrive'
@@ -261,6 +263,8 @@ export const registry: Record<string, BlockConfig> = {
   start_trigger: StartTriggerBlock,
   stt: SttBlock,
   tts: TtsBlock,
+  clickbank: ClickBankBlock,
+  paypal: PayPalBlock,
   stripe: StripeBlock,
   supabase: SupabaseBlock,
   tavily: TavilyBlock,
