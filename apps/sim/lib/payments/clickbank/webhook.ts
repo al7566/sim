@@ -99,8 +99,14 @@ export async function handleClickBankWebhook(event: ClickBankWebhookEvent): Prom
           receipt: event.receipt,
           amount: event.amount,
         })
-        // TODO: Store transaction in database
-        // TODO: Trigger workflow webhooks
+        // Track affiliate commission
+        await trackClickBankCommission({
+          receipt: event.receipt,
+          affiliateId: event.affiliateId,
+          saleAmount: event.amount,
+          productId: event.productId || '',
+          transactionType: 'SALE',
+        })
         break
 
       case 'BILL':
@@ -109,8 +115,14 @@ export async function handleClickBankWebhook(event: ClickBankWebhookEvent): Prom
           receipt: event.receipt,
           amount: event.amount,
         })
-        // TODO: Store transaction in database
-        // TODO: Trigger workflow webhooks
+        // Track recurring commission
+        await trackClickBankCommission({
+          receipt: event.receipt,
+          affiliateId: event.affiliateId,
+          saleAmount: event.amount,
+          productId: event.productId || '',
+          transactionType: 'BILL',
+        })
         break
 
       case 'RFND':

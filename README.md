@@ -292,7 +292,25 @@ All webhooks include signature verification for security.
 
 - [ClickBank Integration Guide](deploy/railway/README.md)
 - [PayPal Integration Guide](deploy/digitalocean/README.md)
+- **[💰 Selling Apps & Making Money](docs/QUICK_START_SELLING.md)** ⭐
 - [Full Documentation](https://docs.sim.ai/payments)
+
+## 🚀 Quick Deploy Script
+
+Deploy to production in one command:
+
+```bash
+chmod +x deploy.sh
+./deploy.sh
+```
+
+Choose your platform:
+1. Railway (easiest)
+2. DigitalOcean  
+3. Docker (local)
+4. Kubernetes
+
+The script configures webhooks, health checks, and payment providers automatically!
 
 ## Troubleshooting
 
