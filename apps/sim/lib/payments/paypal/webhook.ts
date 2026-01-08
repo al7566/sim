@@ -1,5 +1,6 @@
 import { createLogger } from '@sim/logger'
 import { env } from '@/lib/core/config/env'
+import { trackPayPalCommission } from '@/lib/affiliate/integration'
 import type { PayPalWebhookEvent, PayPalWebhookEventType } from './types'
 
 const logger = createLogger('PayPalWebhook')
@@ -142,6 +143,14 @@ export async function handlePayPalWebhook(event: PayPalWebhookEvent): Promise<vo
           eventId: event.id,
           captureId: event.resource.id,
         })
+        
+        // Track affiliate commission
+        await trackPayPalCommission({
+          orderId: event.resource.id,
+          customId: event.resource.custom_id,
+          amount: Number.parseFloat(event.resource.amount?.value || '0'),
+        })
+        
         // TODO: Store transaction in database
         // TODO: Trigger workflow webhooks
         break
